@@ -1,0 +1,96 @@
+digraph MovieBookingSystem {
+    label="Movie Booking System - UML Class Diagram";
+    labelloc=t;
+    fontsize=18;
+    fontname="Helvetica-Bold";
+    rankdir=TB;
+    nodesep=0.35;
+    ranksep=1.0;
+
+    node [shape=record, fontname="Helvetica", fontsize=10, style=filled, fillcolor="#FFFDE7", color="#555555"];
+    edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+    Main [label="{Main||+ main(args : String[]) : void\l}"];
+
+    AppPanel [label="{AppPanel|- cardLayout : CardLayout\l- signInPanel : SignInPanel\l- dashboardPanel : DashboardPanel\l- showtimesPanel : ShowtimesPanel\l- movieDetailsPanel : MovieDetailsPanel\l- seatPanel : SeatPanel\l- ticketBookingPanel : TicketBookingPanel\l- checkoutPanel : CheckoutPanel\l- confirmationPanel : ConfirmationPanel\l- ticketsPanel : TicketsPanel\l|+ showScreen(name : String) : void\l}"];
+
+    JPanel [label="{\<\<javax.swing\>\>\nJPanel}", fillcolor="#E3F2FD"];
+
+    SignInPanel [label="{SignInPanel|- usernameField : JTextField\l- passwordField : JPasswordField\l|- doSignIn() : void\l- doCreateAccount() : void\l+ reset() : void\l}"];
+
+    DashboardPanel [label="{DashboardPanel|- cardsPanel : JPanel\l|+ refresh() : void\l- createMovieCard(movie : Movie) : JPanel\l}"];
+
+    ShowtimesPanel [label="{ShowtimesPanel|- selectedDate : String\l- tabsPanel : JPanel\l- listPanel : JPanel\l|+ refresh() : void\l- drawTabs() : void\l- createRow(movie : Movie) : JPanel\l}"];
+
+    MovieDetailsPanel [label="{MovieDetailsPanel|- dateBox : JComboBox\l- timeBox : JComboBox\l|+ refresh() : void\l}"];
+
+    SeatPanel [label="{SeatPanel|- seatGrid : JPanel\l- selectedLabel : JLabel\l|+ refresh() : void\l- drawSeats() : void\l- updateSummary() : void\l}"];
+
+    TicketBookingPanel [label="{TicketBookingPanel|- orderHolder : JPanel\l|+ refresh() : void\l}"];
+
+    CheckoutPanel [label="{CheckoutPanel|- accountNumberField : JTextField\l- accountNameField : JTextField\l- emailField : JTextField\l- ccvField : JPasswordField\l|+ refresh() : void\l- confirmPayment() : void\l}"];
+
+    ConfirmationPanel [label="{ConfirmationPanel|- messageLabel : JLabel\l|+ refresh() : void\l}"];
+
+    TicketsPanel [label="{TicketsPanel|- table : JTable\l- shownBookings : ArrayList\<Booking\>\l|+ refresh() : void\l- cancelSelected() : void\l}"];
+
+    BookingManager [label="{BookingManager|- movies : ArrayList\<Movie\>\l- dates : ArrayList\<String\>\l- users : HashMap\<String,String\>\l- seatMap : HashMap\<String,boolean[][]\>\l- selectedSeats : Stack\<String\>\l- paymentQueue : Queue\<Booking\>\l- history : LinkedList\<Booking\>\l- currentUser : String\l- currentMovie : Movie\l- currentDate : String\l- currentShowtime : String\l- lastBooking : Booking\l|+ login(user, pass) : boolean\l+ createAccount(user, pass) : boolean\l+ selectMovie(movie) : void\l+ setSchedule(date, time) : void\l+ isBooked(row, col) : boolean\l+ toggleSeat(label) : void\l+ undoLastSeat() : String\l+ addToPaymentQueue(name, email) : Booking\l+ processPayments() : int\l+ cancelBooking(booking) : void\l+ getHistoryForUser() : ArrayList\<Booking\>\l}", fillcolor="#E8F5E9"];
+
+    Movie [label="{Movie|- title : String\l- genre : String\l- rating : String\l- duration : int\l- price : double\l- cinema : String\l- summary : String\l- showtimes : ArrayList\<String\>\l|+ getTitle() : String\l+ getPrice() : double\l+ getShowtimes() : ArrayList\<String\>\l}"];
+
+    Booking [label="{Booking|- id : int\l- username : String\l- movieTitle : String\l- cinema : String\l- date : String\l- showtime : String\l- seats : ArrayList\<String\>\l- total : double\l- cardName : String\l- email : String\l- status : String\l|+ getId() : int\l+ getSeatsText() : String\l+ setStatus(status : String) : void\l}"];
+
+    Theme [label="{Theme|+ colors and fonts\l|+ makeButton(text, color) : JButton\l+ makeNavBar(app, manager) : JPanel\l+ makeOrderBox(manager) : JPanel\l+ money(amount : double) : String\l}", fillcolor="#F3E5F5"];
+
+    PosterPanel [label="{PosterPanel|- title : String\l|+ setTitle(title : String) : void\l# paintComponent(g : Graphics) : void\l}"];
+
+    // Main creates the application
+    Main -> AppPanel [style=dashed, arrowhead=open, label="creates"];
+    Main -> BookingManager [style=dashed, arrowhead=open, label="creates"];
+
+    // AppPanel contains the nine screens (composition)
+    AppPanel -> SignInPanel         [arrowtail=diamond, dir=back];
+    AppPanel -> DashboardPanel      [arrowtail=diamond, dir=back];
+    AppPanel -> ShowtimesPanel      [arrowtail=diamond, dir=back];
+    AppPanel -> MovieDetailsPanel   [arrowtail=diamond, dir=back];
+    AppPanel -> SeatPanel           [arrowtail=diamond, dir=back];
+    AppPanel -> TicketBookingPanel  [arrowtail=diamond, dir=back];
+    AppPanel -> CheckoutPanel       [arrowtail=diamond, dir=back];
+    AppPanel -> ConfirmationPanel   [arrowtail=diamond, dir=back];
+    AppPanel -> TicketsPanel        [arrowtail=diamond, dir=back];
+
+    // Inheritance: the screens and the poster extend JPanel
+    AppPanel          -> JPanel [arrowhead=empty];
+    SignInPanel       -> JPanel [arrowhead=empty];
+    DashboardPanel    -> JPanel [arrowhead=empty];
+    ShowtimesPanel    -> JPanel [arrowhead=empty];
+    MovieDetailsPanel -> JPanel [arrowhead=empty];
+    SeatPanel         -> JPanel [arrowhead=empty];
+    TicketBookingPanel-> JPanel [arrowhead=empty];
+    CheckoutPanel     -> JPanel [arrowhead=empty];
+    ConfirmationPanel -> JPanel [arrowhead=empty];
+    TicketsPanel      -> JPanel [arrowhead=empty];
+    PosterPanel       -> JPanel [arrowhead=empty];
+
+    // The screens use BookingManager (dependency)
+    SignInPanel        -> BookingManager [style=dashed, arrowhead=open];
+    DashboardPanel     -> BookingManager [style=dashed, arrowhead=open];
+    ShowtimesPanel     -> BookingManager [style=dashed, arrowhead=open];
+    MovieDetailsPanel  -> BookingManager [style=dashed, arrowhead=open];
+    SeatPanel          -> BookingManager [style=dashed, arrowhead=open];
+    TicketBookingPanel -> BookingManager [style=dashed, arrowhead=open];
+    CheckoutPanel      -> BookingManager [style=dashed, arrowhead=open];
+    ConfirmationPanel  -> BookingManager [style=dashed, arrowhead=open];
+    TicketsPanel       -> BookingManager [style=dashed, arrowhead=open, label="uses"];
+
+    // BookingManager keeps the movies and the bookings (aggregation)
+    BookingManager -> Movie   [arrowtail=odiamond, dir=back, taillabel="1", headlabel="0..*", label="movies"];
+    BookingManager -> Booking [arrowtail=odiamond, dir=back, taillabel="1", headlabel="0..*", label="history / paymentQueue"];
+
+    // A booking is made for a movie
+    Booking -> Movie [style=dashed, arrowhead=open, label="books"];
+
+    // Some screens show posters and use Theme
+    DashboardPanel -> PosterPanel [style=dashed, arrowhead=open, label="shows"];
+    DashboardPanel -> Theme [style=dashed, arrowhead=open, label="styles"];
+}
